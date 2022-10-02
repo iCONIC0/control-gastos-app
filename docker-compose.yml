@@ -1,0 +1,27 @@
+version: '3.7'
+services: 
+  app:
+    networks:
+      - default
+    build:
+      #comments this lines for mac or windows
+      args:
+        #comments this lines for mac or windows
+        user: dev
+        #comments this lines for mac or windows
+        uid: 1000
+      context: .
+      dockerfile: Dockerfile
+    image: 'control-gastos-app'
+    container_name: control-gastos-app
+    ports:
+      - 19000:19000
+      - 19001:19001
+      - 19002:19002
+      - 19006:19006
+    volumes:
+      - ./code/:/var/www/html
+networks:
+  default:
+    external:
+      name: localnetwork
