@@ -1,4 +1,3 @@
-import React from "react";
 import axios from "axios";
 
 const AXIOS_URL = "http://192.168.4.39:3355";

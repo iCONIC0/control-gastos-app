@@ -15,12 +15,12 @@ import useColorScheme from '../hooks/useColorScheme';
 import { AuthProvider, useAuth } from '../Providers/AuthContext';
 import ProfileScreen from '../screens/Auth/ProfileScreen';
 import LoginScreen from '../screens/Login';
-import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
+import IncomesScreen from '../screens/Incomes/IncomesScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { LoginStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import IncomesForm from '../screens/Incomes/IncomesForm';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -49,7 +49,7 @@ function RootNavigator() {
         <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
-          <Stack.Screen name="Modal" component={ModalScreen} />
+          <Stack.Screen name="IncomesAdd" component={IncomesForm} />
         </Stack.Group>
       </Stack.Navigator>
     );
@@ -73,30 +73,16 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Incomes"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
+        name="Incomes"
+        component={IncomesScreen}
+        options={({ navigation }: RootTabScreenProps<'Incomes'>) => ({
+          title: 'Gastos',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
         })}
       />
       <BottomTab.Screen
@@ -112,7 +98,7 @@ function BottomTabNavigator() {
         component={ProfileScreen}
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </BottomTab.Navigator>
