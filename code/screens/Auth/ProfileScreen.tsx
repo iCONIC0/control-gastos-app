@@ -24,7 +24,7 @@ export default function ProfileScreen({ navigation }:any) {
         <View style={styles.container}>
             <Text style={styles.title}>Perfil</Text>
             <Text style={styles.title}>{profileData['name']}</Text>
-            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+            <View style={styles.separator} lightColor="#eee" darkColor="#eee" />
             <Button 
                 onPress={async ()=>{
                     await signOut();

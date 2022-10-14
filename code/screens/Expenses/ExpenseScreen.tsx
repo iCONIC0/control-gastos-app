@@ -1,20 +1,18 @@
 import { ScrollView,RefreshControl, StyleSheet } from 'react-native';
 
-import EditScreenInfo from '../../components/EditScreenInfo';
 import { Text, View } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
-import { ListItem,Avatar,Chip,Button  } from "@rneui/themed";
-import { SetStateAction, useCallback, useState } from 'react';
+import { ListItem,Avatar,Chip  } from "@rneui/themed";
+import { useCallback, useState } from 'react';
 import { useEffect } from 'react';
-import { incomes, incomesFilters } from '../../Services/ApiService';
 import ExpandedArea from '../../components/ExpandedArea';
 import { formatDates, formatMoney } from '../../utils/Utils';
 import { FAB } from '@rneui/base';
+import { expenses, expensesFilters } from '../../Services/ApiService';
 import CardView from '../../components/CardView';
-import * as _ from 'lodash';
-import SliderPages from '../../components/SliderPages';
 
-export default function IncomesScreen({ navigation }: RootTabScreenProps<'Incomes'>) {
+
+export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expenses'>) {
   const [filters,setFilters] = useState<any>();
   const [selectedFilters,setSelectedFilters] = useState<any>();
   const [items,setItems] = useState<any>();
@@ -22,38 +20,36 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
   const [loadingData,setLoadingData] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-      async function loadFilter() {
-        let data = await incomesFilters()
+      async function loaddata() {
+        let data = await expensesFilters()
         setFilters(data.data)
         setLoadingData(true)
       }
-      
-      if(!loadingData){
-          loadFilter();
+      if(!loadingData ){
+          loaddata();
       }
 
-  },[]);
+    },[loadingData]);
   useEffect(() => {
-      async function loaddata() {
-        let data = await incomes(selectedFilters)
-        setItems(data.data.incomes)
-        setItem(data.data.extra)
-        setLoadingData(true)
-      }
-      setLoadingData(false)
+    async function loaddata() {
+      let data = await expenses(selectedFilters)
+      setItems(data.data.expenses)
+      setItem(data.data.extra)
+      setLoadingData(true)
+    }
+    setLoadingData(false)
 
-      loaddata();
+    loaddata();
 
   },[filters,selectedFilters]);
-  const onRefresh = useCallback(async () => {
-      setRefreshing(true);
-      console.log(selectedFilters)
-
-      let data = await incomes(selectedFilters)
-      setItems(data.data.incomes??[])
-      setItem(data.data.extra ?? {})
-      setRefreshing(false);
-  }, []);
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        console.log(selectedFilters)
+        let data = await expenses(selectedFilters)
+        setItems(data.data.expenses)
+        setItem(data.data.extra ?? {})
+        setRefreshing(false);
+    }, []);
   const expandList = (i:any) =>{
     let itemList = [...items];
     itemList[i]['expand'] = !itemList[i]['expand']
@@ -74,25 +70,26 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
           }
         </ScrollView>
       </View>
-      <ScrollView style={{ 
-        backgroundColor: "white", 
-        flex: 1,
-        borderLeftColor:"rgba(0,0,0,.2)",
-        borderRightColor:"rgba(0,0,0,.2)",
-        borderTopColor:"rgba(0,0,0,.2)",
-        borderBottomColor:"rgba(255,255,255,1)",
-        borderWidth:1, 
-        marginHorizontal:10,
-        borderTopLeftRadius:10,
-        borderTopRightRadius:10,
-      }}
-        refreshControl={
-          <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-          />
-        }  
-      >
+      <ScrollView style={{
+          backgroundColor: "white", 
+          flex: 1,
+          borderLeftColor:"rgba(0,0,0,.2)",
+          borderRightColor:"rgba(0,0,0,.2)",
+          borderTopColor:"rgba(0,0,0,.2)",
+          borderBottomColor:"rgba(255,255,255,1)",
+          borderWidth:1, 
+          marginHorizontal:10,
+          borderTopLeftRadius:10,
+          borderTopRightRadius:10,
+        }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+        >
+
       {
         (items ?? []).map((l:any, i:any) => (
           <ListItem key={i} bottomDivider onPress={()=>{
@@ -101,7 +98,7 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
             <ListItem.Content>
               <ListItem.Title >{l.name}({formatDates(l.created_at)})</ListItem.Title>
               <ListItem.Subtitle>{l.expand ? '' : formatMoney(l.amount) }</ListItem.Subtitle>
-              { l.expand ? <ExpandedArea item={l}/> : null }
+              { l.expand ? <ExpandedArea item={l} key={l}/> : null }
             </ListItem.Content>
           </ListItem>
         ))
@@ -109,7 +106,7 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
       </ScrollView>
       <FAB
         placement="right"
-        onPress={()=>{navigation.navigate('IncomesAdd')}}
+        onPress={()=>{navigation.navigate('ExpensesAdd')}}
         icon={{ name: 'add', color: 'white' }}
         color="black"
       />

@@ -21,6 +21,11 @@ export const formatMoney = (amount:number|string)=>{
 }
 
 export const formatDates = (date:string,format:string='yyyy LLL dd')=>{    
-    console.log(date)
     return DateTime.fromISO(date).toFormat(format); 
+}
+export const onlyNumber = (text:string)=>{    
+    const condition = new RegExp(/^[0-9]+\.?[0-9]*$/,"g");
+    if (condition.test(text) || text.length == 0) {
+        return text.substr(1);
+    }
 }

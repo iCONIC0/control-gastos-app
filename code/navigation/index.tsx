@@ -17,10 +17,11 @@ import ProfileScreen from '../screens/Auth/ProfileScreen';
 import LoginScreen from '../screens/Login';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import IncomesScreen from '../screens/Incomes/IncomesScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
 import { LoginStackParamList, RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import IncomesForm from '../screens/Incomes/IncomesForm';
+import ExpenseScreen from '../screens/Expenses/ExpenseScreen';
+import ExpensesForm from '../screens/Expenses/ExpensesForm';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -50,6 +51,9 @@ function RootNavigator() {
         <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="IncomesAdd" component={IncomesForm} />
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen name="ExpensesAdd" component={ExpensesForm} />
         </Stack.Group>
       </Stack.Navigator>
     );
@@ -81,17 +85,17 @@ function BottomTabNavigator() {
         name="Incomes"
         component={IncomesScreen}
         options={({ navigation }: RootTabScreenProps<'Incomes'>) => ({
-          title: 'Gastos',
+          title: 'Ingresos',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: 'Tab Two',
+        name="Expenses"
+        component={ExpenseScreen}
+        options={({ navigation }: RootTabScreenProps<'Expenses'>) => ({
+          title: 'Egresos',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
+        })}
       />
       <BottomTab.Screen
         name="Profile"

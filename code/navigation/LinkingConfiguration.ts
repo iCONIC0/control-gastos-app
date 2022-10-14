@@ -17,12 +17,7 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           Incomes: {
             screens: {
-              IncomesScreen: 'one',
-            },
-          },
-          TabTwo: {
-            screens: {
-              TabTwoScreen: 'two',
+              IncomesScreen: 'incomes',
             },
           },
         },

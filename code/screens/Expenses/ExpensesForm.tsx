@@ -5,37 +5,60 @@ import { RootTabScreenProps } from '../../types';
 import { Input } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
-import { addIncomes, incomesTypesList } from '../../Services/ApiService';
+import { addExpense,  expensesTypesList, } from '../../Services/ApiService';
 import { RadioButton } from 'react-native-paper';
+import DatePicker from 'react-native-date-picker'
 
 
-export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'>) {
-  const [selectedLanguage, setSelectedLanguage] = useState();
+export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expenses'>) {
   const [formData,setFormData] = useState<any>({});
   const [loadingData,setLoadingData] = useState(false);
-  const [incomesTypeList,setIncomesTypeList] = useState([]);
+  const [expensesTypeList,setExpensesTypeList] = useState([]);
+  const [show, setShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+
   const onChangeInput = (value:any,name:any)=>{
     setFormData({...formData,[name]:value});
   }
   useEffect(() => {
     async function loaddata() {
-      let data = await incomesTypesList()
+      let data = await expensesTypesList()
       if(data.status){
-        setIncomesTypeList(data.data)
+        setExpensesTypeList(data.data??[])
         if(data.data.length>0){
           onChangeInput(data.data[0].value,'type_id')
-  
         }
       }
       setLoadingData(true)
+ 
     }
     if(!loadingData){
         loaddata();
     }
 
   },[loadingData]);
+  const onChange = (event:any, selectedDate:any) => {
+    setShow(false);
+    setDate(selectedDate);
+
+  };
+
   return (
      <View style={styles.container}>
+      <Button  title="Open" onPress={() => setShow(true)} type={'Primary'} />
+      <DatePicker
+        modal
+        open={show}
+        date={date}
+        onConfirm={(date) => {
+          setShow(false)
+          setDate(date)
+        }}
+        onCancel={() => {
+          setShow(false)
+        }}
+      />
+
       <Input placeholder='nombre' value={formData?.name} onChangeText={(text)=>{
           onChangeInput(text.toLowerCase(),'name')
         }}></Input>
@@ -45,8 +68,7 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
         ></Input>
       <RadioButton.Group
         onValueChange={value => onChangeInput(value,'type_id')} value={formData?.type_id}>      
-      {
-        incomesTypeList.map((item:any)=>{
+      {expensesTypeList.map((item:any)=>{
           return (<RadioButton.Item label={item.name} value={item.value} key={item.value}/>)
         })
       }
@@ -55,8 +77,7 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
             
             withIcon={false} 
             onPress={async ()=>{
-              let resp = await addIncomes(formData);
-              console.log(resp)
+              let resp = await addExpense(formData);
               if(resp.status){
                 navigation.goBack()
               }
