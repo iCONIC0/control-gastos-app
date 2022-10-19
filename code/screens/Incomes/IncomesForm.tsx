@@ -56,7 +56,6 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
             withIcon={false} 
             onPress={async ()=>{
               let resp = await addIncomes(formData);
-              console.log(resp)
               if(resp.status){
                 navigation.goBack()
               }

@@ -30,6 +30,7 @@ export const AuthProvider: any = ({children}:any) => {
             await AsyncStorage.removeItem('@reactNativeAuth:user');
             await AsyncStorage.removeItem('@reactNativeAuth:token');
             setUser(null);
+            setLoading(false);
           }
         }
         loadStorageData();
@@ -67,10 +68,6 @@ export const AuthProvider: any = ({children}:any) => {
         }
         
         setLoading(false);
-
-       
-
-
     }
     if (loading) {
       return (

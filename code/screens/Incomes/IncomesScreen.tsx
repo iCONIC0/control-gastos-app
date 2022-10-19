@@ -32,12 +32,12 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
           loadFilter();
       }
 
-  },[]);
+  },[loadingData]);
   useEffect(() => {
       async function loaddata() {
         let data = await incomes(selectedFilters)
-        setItems(data.data.incomes)
-        setItem(data.data.extra)
+        setItems(data.data.incomes ?? [])
+        setItem(data.data.extra ?? {})
         setLoadingData(true)
       }
       setLoadingData(false)
@@ -47,7 +47,6 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
   },[filters,selectedFilters]);
   const onRefresh = useCallback(async () => {
       setRefreshing(true);
-      console.log(selectedFilters)
 
       let data = await incomes(selectedFilters)
       setItems(data.data.incomes??[])
@@ -97,10 +96,15 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
         (items ?? []).map((l:any, i:any) => (
           <ListItem key={i} bottomDivider onPress={()=>{
             expandList(i)
-          }}>
+          }} containerStyle={{borderTopRightRadius:10,borderTopLeftRadius:10,backgroundColor:"transparent"}}>
             <ListItem.Content>
-              <ListItem.Title >{l.name}({formatDates(l.created_at)})</ListItem.Title>
-              <ListItem.Subtitle>{l.expand ? '' : formatMoney(l.amount) }</ListItem.Subtitle>
+              <ListItem.Title >{l.name}</ListItem.Title>
+              <ListItem.Subtitle>{l.expand ? '' :  
+                <View style={{flexDirection:"row",backgroundColor:"#fff",justifyContent:'space-between',alignContent:'space-around',width:'100%',paddingTop:5}}>
+                  <Text darkColor="rgba(0,0,0,0.8)" lightColor="rgba(255,255,255,0.8)" style={{textAlign:"left" }}>{formatMoney(l.amount)}</Text>
+                  <Text darkColor="rgba(0,0,0,0.8)" lightColor="rgba(255,255,255,0.8)" style={{textAlign:"left" }}>Fecha: {formatDates(l.created_at)}</Text>
+                </View>
+              }</ListItem.Subtitle>
               { l.expand ? <ExpandedArea item={l}/> : null }
             </ListItem.Content>
           </ListItem>

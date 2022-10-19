@@ -20,7 +20,6 @@ export default function SliderPages(props:{
     const {haveCancelButton=false} = props;
     const {withOutButtons=true} = props;
     const onNext = async (type:string) => {
-        console.log("aca")
         let current = step;
         if(type==='next' && current<pages.length-1){
             setStep(current+1);

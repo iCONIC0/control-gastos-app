@@ -1,9 +1,10 @@
 {
   "expo": {
     "name": "control-gastos-app",
-    "slug": "control-gastos-app",
+    "slug": "control-gastos",
     "version": "1.0.0",
     "orientation": "portrait",
+    "owner": "iconic_0",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",

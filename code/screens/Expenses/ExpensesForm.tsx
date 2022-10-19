@@ -3,19 +3,18 @@ import { StatusBar } from 'expo-status-bar';
 import {  View } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
 import { Input } from '@rneui/themed';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { addExpense,  expensesTypesList, } from '../../Services/ApiService';
 import { RadioButton } from 'react-native-paper';
-import DatePicker from 'react-native-date-picker'
-
+import { maskInput } from '../../utils/Utils';
 
 export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expenses'>) {
   const [formData,setFormData] = useState<any>({});
   const [loadingData,setLoadingData] = useState(false);
   const [expensesTypeList,setExpensesTypeList] = useState([]);
-  const [show, setShow] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<any>(new Date())
+  const [open, setOpen] = useState(false)
 
   const onChangeInput = (value:any,name:any)=>{
     setFormData({...formData,[name]:value});
@@ -37,28 +36,12 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
     }
 
   },[loadingData]);
-  const onChange = (event:any, selectedDate:any) => {
-    setShow(false);
-    setDate(selectedDate);
-
-  };
 
   return (
      <View style={styles.container}>
-      <Button  title="Open" onPress={() => setShow(true)} type={'Primary'} />
-      <DatePicker
-        modal
-        open={show}
-        date={date}
-        onConfirm={(date) => {
-          setShow(false)
-          setDate(date)
-        }}
-        onCancel={() => {
-          setShow(false)
-        }}
-      />
-
+      <Input placeholder='Fecha DD/MM/YYYY' value={formData?.date} onChangeText={(text)=>{
+          onChangeInput(maskInput(text.toLowerCase(),'DD/MM/YYYY','/'),'date')
+        }} keyboardType="numeric"></Input>
       <Input placeholder='nombre' value={formData?.name} onChangeText={(text)=>{
           onChangeInput(text.toLowerCase(),'name')
         }}></Input>
@@ -73,6 +56,7 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
         })
       }
       </RadioButton.Group>
+
       <Button
             
             withIcon={false} 
@@ -85,6 +69,7 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
             type="Primary" 
             title='Guardar'
             containerStyle={{
+                marginTop:20,
                 height:50,
                 width:"50%",
             }}

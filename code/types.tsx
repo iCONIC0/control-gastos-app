@@ -37,6 +37,7 @@ export type LoginStackScreenProps<Screen extends keyof LoginStackParamList> = Na
 export type RootTabParamList = {
   Incomes: undefined;
   Expenses: undefined;
+  Home: undefined;
   Profile: undefined;
 };
 

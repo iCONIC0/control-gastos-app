@@ -3,7 +3,7 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -22,6 +22,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 import IncomesForm from '../screens/Incomes/IncomesForm';
 import ExpenseScreen from '../screens/Expenses/ExpenseScreen';
 import ExpensesForm from '../screens/Expenses/ExpensesForm';
+import HomeScreen from '../screens/HomeScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -49,8 +50,11 @@ function RootNavigator() {
       <Stack.Navigator>
         <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Group screenOptions={{ presentation: 'modal' , headerShown:false}}>
           <Stack.Screen name="IncomesAdd" component={IncomesForm} />
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Group>
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="ExpensesAdd" component={ExpensesForm} />
@@ -74,19 +78,50 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-
+  const prof = (navigation:any) => {
+    return (
+      <Pressable
+        onPress={() => navigation.navigate('Profile')}
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.5 : 1,
+        })}>
+        <FontAwesome
+          name="user-circle"
+          size={25}
+          color={Colors[colorScheme].text}
+          style={{ marginRight: 15 }}
+        />
+      </Pressable>
+    )
+  }
   return (
     <BottomTab.Navigator
-      initialRouteName="Incomes"
+      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
+      }}
+      >
       <BottomTab.Screen
         name="Incomes"
         component={IncomesScreen}
         options={({ navigation }: RootTabScreenProps<'Incomes'>) => ({
           title: 'Ingresos',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons
+            name="hand-coin-outline"
+            size={25}
+            color={color}
+            style={{ marginRight: 15 }}
+          />,
+          headerRight: () => {return prof(navigation)} ,
+        })}
+      />
+      <BottomTab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={({ navigation }: RootTabScreenProps<'Home'>) => ({
+          title: 'Inicio',
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerRight: () => {return prof(navigation)} ,
         })}
       />
       <BottomTab.Screen
@@ -94,17 +129,16 @@ function BottomTabNavigator() {
         component={ExpenseScreen}
         options={({ navigation }: RootTabScreenProps<'Expenses'>) => ({
           title: 'Egresos',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons
+            name="hand-coin"
+            size={25}
+            color={color}
+            style={{ marginRight: 15 }}
+          />,
+          headerRight: () => {return prof(navigation)} ,
         })}
       />
-      <BottomTab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          title: 'Perfil',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      />
+      
     </BottomTab.Navigator>
   );
 }
