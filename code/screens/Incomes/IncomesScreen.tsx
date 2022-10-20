@@ -12,7 +12,8 @@ import { formatDates, formatMoney } from '../../utils/Utils';
 import { FAB } from '@rneui/base';
 import CardView from '../../components/CardView';
 import * as _ from 'lodash';
-import SliderPages from '../../components/SliderPages';
+import { ButtonGroup } from "@rneui/themed";
+
 
 export default function IncomesScreen({ navigation }: RootTabScreenProps<'Incomes'>) {
   const [filters,setFilters] = useState<any>();
@@ -21,6 +22,7 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
   const [item,setItem] = useState<any>();
   const [loadingData,setLoadingData] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [familyIncomes, setFamilyIncomes] = useState(0);
   useEffect(() => {
       async function loadFilter() {
         let data = await incomesFilters()
@@ -35,7 +37,7 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
   },[loadingData]);
   useEffect(() => {
       async function loaddata() {
-        let data = await incomes(selectedFilters)
+        let data = await incomes({...selectedFilters,family:familyIncomes})
         setItems(data.data.incomes ?? [])
         setItem(data.data.extra ?? {})
         setLoadingData(true)
@@ -44,15 +46,15 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
 
       loaddata();
 
-  },[filters,selectedFilters]);
-  const onRefresh = useCallback(async () => {
-      setRefreshing(true);
+  },[filters,selectedFilters,familyIncomes]);
+  // const onRefresh = useCallback(async () => {
+  //     setRefreshing(true);
 
-      let data = await incomes(selectedFilters)
-      setItems(data.data.incomes??[])
-      setItem(data.data.extra ?? {})
-      setRefreshing(false);
-  }, []);
+  //     let data = await incomes({...selectedFilters,family:familyIncomes})
+  //     setItems(data.data.incomes??[])
+  //     setItem(data.data.extra ?? {})
+  //     setRefreshing(false);
+  // }, []);
   const expandList = (i:any) =>{
     let itemList = [...items];
     itemList[i]['expand'] = !itemList[i]['expand']
@@ -60,6 +62,14 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
   }
   return (
     <View style={{height:"100%",backgroundColor:"rgba(255,255,255,1)"}}>
+      <ButtonGroup
+        buttons={['Tus Ingresos', 'Ingresos Familiares']}
+        selectedIndex={familyIncomes}
+        onPress={(value) => {
+          setFamilyIncomes(value);
+        }}
+        containerStyle={{ marginBottom: 20 }}
+      />
       <View style={{width:'100%',alignItems:"center",padding:10,backgroundColor:"rgba(255,255,255,1)"}}>
         <CardView key={item} item={item}>
         </CardView>
@@ -85,12 +95,12 @@ export default function IncomesScreen({ navigation }: RootTabScreenProps<'Income
         borderTopLeftRadius:10,
         borderTopRightRadius:10,
       }}
-        refreshControl={
-          <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-          />
-        }  
+        // refreshControl={
+        //   <RefreshControl
+        //       refreshing={refreshing}
+        //       onRefresh={onRefresh}
+        //   />
+        // }  
       >
       {
         (items ?? []).map((l:any, i:any) => (

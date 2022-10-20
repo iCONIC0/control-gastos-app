@@ -1,12 +1,13 @@
 import {Platform,  StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import {  View } from '../../components/Themed';
+import {  View,Text } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
 import { Input } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 import { addIncomes, incomesTypesList } from '../../Services/ApiService';
 import { RadioButton } from 'react-native-paper';
+import { Switch } from "@rneui/themed";
 
 
 export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'>) {
@@ -43,6 +44,13 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
           onChangeInput(text.toLowerCase().replace(/[^0-9]/g, ''),'amount')
         }} keyboardType="numeric"
         ></Input>
+      <View style={{flexDirection:"row",backgroundColor:"#fff",justifyContent:'center',alignContent:'center',alignItems: 'center',width:'100%',paddingTop:5}}>
+        <Text darkColor="rgba(0,0,0,0.8)" lightColor="rgba(255,255,255,0.8)" style={{textAlign:"left" }}>Ingreso Familiar </Text><Switch
+          
+          value={formData?.family}
+          onValueChange={(value) => onChangeInput(!formData?.family,'family')}
+        />
+      </View>
       <RadioButton.Group
         onValueChange={value => onChangeInput(value,'type_id')} value={formData?.type_id}>      
       {

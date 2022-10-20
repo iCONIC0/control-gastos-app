@@ -2,7 +2,7 @@ import { ScrollView,RefreshControl, StyleSheet } from 'react-native';
 
 import { Text, View } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
-import { ListItem,Avatar,Chip  } from "@rneui/themed";
+import { ListItem,Avatar,Chip, ButtonGroup  } from "@rneui/themed";
 import { useCallback, useState } from 'react';
 import { useEffect } from 'react';
 import ExpandedArea from '../../components/ExpandedArea';
@@ -19,6 +19,7 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
   const [item,setItem] = useState<any>();
   const [loadingData,setLoadingData] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [familyExpenses, setFamilyExpenses] = useState(0);
   useEffect(() => {
       async function loaddata() {
         let data = await expensesFilters()
@@ -32,7 +33,7 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
     },[loadingData]);
   useEffect(() => {
     async function loaddata() {
-      let data = await expenses(selectedFilters)
+      let data = await expenses({...selectedFilters,family:familyExpenses})
       setItems(data.data.expenses ?? [])
       setItem(data.data.extra ?? {})
       setLoadingData(true)
@@ -41,14 +42,14 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
 
     loaddata();
 
-  },[filters,selectedFilters]);
-    const onRefresh = useCallback(async () => {
-        setRefreshing(true);
-        let data = await expenses(selectedFilters)
-        setItems(data.data.expenses ?? [])
-        setItem(data.data.extra ?? {})
-        setRefreshing(false);
-    }, []);
+  },[filters,selectedFilters,familyExpenses]);
+    // const onRefresh = useCallback(async () => {
+    //     setRefreshing(true);
+    //     let data = await expenses(selectedFilters)
+    //     setItems(data.data.expenses ?? [])
+    //     setItem(data.data.extra ?? {})
+    //     setRefreshing(false);
+    // }, []);
   const expandList = (i:any) =>{
     let itemList = [...items];
     itemList[i]['expand'] = !itemList[i]['expand']
@@ -56,6 +57,14 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
   }
   return (
     <View style={{height:"100%",backgroundColor:"rgba(255,255,255,1)"}}>
+      <ButtonGroup
+        buttons={['Tus Gastos', 'Gastos Familiares']}
+        selectedIndex={familyExpenses}
+        onPress={(value) => {
+          setFamilyExpenses(value);
+        }}
+        containerStyle={{ marginBottom: 20 }}
+      />
       <View style={{width:'100%',alignItems:"center",padding:10,backgroundColor:"rgba(255,255,255,1)"}}>
         <CardView key={item} item={item}>
         </CardView>
@@ -81,12 +90,12 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
           borderTopLeftRadius:10,
           borderTopRightRadius:10,
         }}
-            refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
-            }
+            // refreshControl={
+            //     <RefreshControl
+            //         refreshing={refreshing}
+            //         onRefresh={onRefresh}
+            //     />
+            // }
         >
 
       {
@@ -135,3 +144,4 @@ const styles = StyleSheet.create({
     width: '80%',
   },
 });
+
