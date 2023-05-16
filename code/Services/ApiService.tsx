@@ -54,6 +54,37 @@ export async function profile(): Promise<{
     };
 
 }
+export async function updateProfile(formData:any): Promise<{
+    status: boolean;
+    data: any
+}> {
+    let storageToken:any = await AsyncStorage.getItem('@reactNativeAuth:token');
+    if(storageToken){
+        let axios = GlobalAxios.getInstance();
+        storageToken = JSON.parse(storageToken)
+        axios.setToken(storageToken.token )
+        let response = await axios.useAxios(true).post('/api/profile',formData, {
+             'headers': { 
+                'Authorization': `Bearer ${storageToken.token}`
+            }}).then(async (resp:any) =>{ 
+            return {
+                status:true,
+                data:resp.data.data ?? {}
+            };
+        }).catch((error:any) => {
+            return {
+                status:false,
+                data:resolverApiErrors(error.response.data)
+            };
+        });
+        return response
+    }
+    return {
+        status:false,
+        data:null
+    };
+
+}
 export async function incomes(params:any={}): Promise<{
     status: boolean;
     data: any
@@ -116,7 +147,7 @@ export async function addIncomes(formData:{amount:number,name:string,type_id:num
     };
 
 }
-export async function incomesTypesList(): Promise<{
+export async function incomesTypesList(isSelect=false): Promise<{
     status: boolean;
     data: any
 }> {
@@ -126,7 +157,8 @@ export async function incomesTypesList(): Promise<{
         storageToken = JSON.parse(storageToken)
         axios.setToken(storageToken.token )
         let response = await axios.useAxios(true).get('/api/incomes-types', {
-             'headers': { 'Authorization': `Bearer ${storageToken.token}` } 
+             'headers': { 'Authorization': `Bearer ${storageToken.token}` },
+             'params': {isSelect:isSelect} 
             }).then(async (resp:any) =>{ 
             return {
                 status:true,
@@ -146,6 +178,71 @@ export async function incomesTypesList(): Promise<{
     };
 
 }
+export async function addIncomesType(params:{
+    name:string
+    description:string
+}): Promise<{
+    status: boolean;
+    data: any
+}> {
+    let storageToken:any = await AsyncStorage.getItem('@reactNativeAuth:token');
+    if(storageToken){
+        let axios = GlobalAxios.getInstance();
+        storageToken = JSON.parse(storageToken)
+        axios.setToken(storageToken.token )
+        let response = await axios.useAxios(true).post('/api/incomes-types',params ,{
+                'headers': { 'Authorization': `Bearer ${storageToken.token}` }
+            }).then(async (resp:any) =>{ 
+            return {
+                status:true,
+                data:resp.data.data ?? []
+            };
+        }).catch((error:any) => {
+            return {
+                status:false,
+                data:resolverApiErrors(error.response.data)
+            };
+        });
+        return response
+    }
+    return {
+        status:false,
+        data:null
+    };
+}
+export async function addExpensesType(params:{
+    name:string
+    description:string
+}): Promise<{
+    status: boolean;
+    data: any
+}> {
+    let storageToken:any = await AsyncStorage.getItem('@reactNativeAuth:token');
+    if(storageToken){
+        let axios = GlobalAxios.getInstance();
+        storageToken = JSON.parse(storageToken)
+        axios.setToken(storageToken.token )
+        let response = await axios.useAxios(true).post('/api/expenses-types',params ,{
+                'headers': { 'Authorization': `Bearer ${storageToken.token}` }
+            }).then(async (resp:any) =>{ 
+            return {
+                status:true,
+                data:resp.data.data ?? []
+            };
+        }).catch((error:any) => {
+            return {
+                status:false,
+                data:resolverApiErrors(error.response.data)
+            };
+        });
+        return response
+    }
+    return {
+        status:false,
+        data:null
+    };
+}
+
 export async function incomesFilters():Promise<{
     status: boolean;
     data: any
@@ -206,7 +303,7 @@ export async function expenses(params:any={}): Promise<{
     };
 
 }
-export async function expensesTypesList(): Promise<{
+export async function expensesTypesList(isSelect=false): Promise<{
     status: boolean;
     data: any
 }> {
@@ -216,7 +313,8 @@ export async function expensesTypesList(): Promise<{
         storageToken = JSON.parse(storageToken)
         axios.setToken(storageToken.token )
         let response = await axios.useAxios(true).get('/api/expenses-types', {
-             'headers': { 'Authorization': `Bearer ${storageToken.token}` } 
+             'headers': { 'Authorization': `Bearer ${storageToken.token}` },
+             'params': {isSelect:isSelect}
             }).then(async (resp:any) =>{ 
             return {
                 status:true,
@@ -296,7 +394,6 @@ export async function expensesFilters():Promise<{
         data:null
     };
 }
-
 export async function home():Promise<{
     status: boolean;
     data: any
@@ -307,6 +404,64 @@ export async function home():Promise<{
         storageToken = JSON.parse(storageToken)
         axios.setToken(storageToken.token )
         let response = await axios.useAxios(true).get('/api/home', {
+             'headers': { 'Authorization': `Bearer ${storageToken.token}` } 
+            }).then(async (resp:any) =>{ 
+            return {
+                status:true,
+                data:resp.data.data ?? []
+            };
+        }).catch((error:any) => {
+            return {
+                status:false,
+                data:resolverApiErrors(error.response.data)
+            };
+        });
+        return response
+    }
+    return {
+        status:false,
+        data:null
+    };
+}
+export async function createFamily(formData:any):Promise<{
+    status: boolean;
+    data: any
+}>{
+    let storageToken:any = await AsyncStorage.getItem('@reactNativeAuth:token');
+    if(storageToken){
+        let axios = GlobalAxios.getInstance();
+        storageToken = JSON.parse(storageToken)
+        axios.setToken(storageToken.token )
+        let response = await axios.useAxios(true).post('/api/family',formData, {
+             'headers': { 'Authorization': `Bearer ${storageToken.token}` } 
+            }).then(async (resp:any) =>{ 
+            return {
+                status:true,
+                data:resp.data.data ?? []
+            };
+        }).catch((error:any) => {
+            return {
+                status:false,
+                data:resolverApiErrors(error.response.data)
+            };
+        });
+        return response
+    }
+    return {
+        status:false,
+        data:null
+    };
+}
+export async function leaveFamily():Promise<{
+    status: boolean;
+    data: any
+}>{
+    let storageToken:any = await AsyncStorage.getItem('@reactNativeAuth:token');
+    if(storageToken){
+        let axios = GlobalAxios.getInstance();
+        storageToken = JSON.parse(storageToken)
+        axios.setToken(storageToken.token )
+        let response = await axios.useAxios(true).delete('/api/family', {
              'headers': { 'Authorization': `Bearer ${storageToken.token}` } 
             }).then(async (resp:any) =>{ 
             return {

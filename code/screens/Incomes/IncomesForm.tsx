@@ -1,4 +1,4 @@
-import {Platform,  StyleSheet } from 'react-native';
+import {KeyboardAvoidingView, Platform,  StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import {  View,Text } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
@@ -8,10 +8,11 @@ import { Button } from '../../components/Button';
 import { addIncomes, incomesTypesList } from '../../Services/ApiService';
 import { RadioButton } from 'react-native-paper';
 import { Switch } from "@rneui/themed";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'>) {
-  const [selectedLanguage, setSelectedLanguage] = useState();
   const [formData,setFormData] = useState<any>({});
   const [loadingData,setLoadingData] = useState(false);
   const [incomesTypeList,setIncomesTypeList] = useState([]);
@@ -36,7 +37,12 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
 
   },[loadingData]);
   return (
-     <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{flex:1}}
+    >
+      <TouchableWithoutFeedback>
+      <View style={styles.container}>
       <Input placeholder='nombre' value={formData?.name} onChangeText={(text)=>{
           onChangeInput(text.toLowerCase(),'name')
         }}></Input>
@@ -44,6 +50,25 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
           onChangeInput(text.toLowerCase().replace(/[^0-9]/g, ''),'amount')
         }} keyboardType="numeric"
         ></Input>
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={incomesTypeList}
+        search
+        maxHeight={300}
+        labelField="name"
+        valueField="value"
+        placeholder="Select item"
+        searchPlaceholder="Search..."
+        value={formData?.type_id}
+        onChange={value => onChangeInput(value,'type_id')}
+        renderLeftIcon={() => (
+          <AntDesign style={styles.icon} color="black" name="check" size={20} />
+        )}
+      />
       <View style={{flexDirection:"row",backgroundColor:"#fff",justifyContent:'center',alignContent:'center',alignItems: 'center',width:'100%',paddingTop:5}}>
         <Text darkColor="rgba(0,0,0,0.8)" lightColor="rgba(255,255,255,0.8)" style={{textAlign:"left" }}>Ingreso Familiar </Text><Switch
           
@@ -51,14 +76,6 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
           onValueChange={(value) => onChangeInput(!formData?.family,'family')}
         />
       </View>
-      <RadioButton.Group
-        onValueChange={value => onChangeInput(value,'type_id')} value={formData?.type_id}>      
-      {
-        incomesTypeList.map((item:any)=>{
-          return (<RadioButton.Item label={item.name} value={item.value} key={item.value}/>)
-        })
-      }
-      </RadioButton.Group>
       <Button
             
             withIcon={false} 
@@ -68,16 +85,20 @@ export default function IncomesForm({ navigation }: RootTabScreenProps<'Incomes'
                 navigation.goBack()
               }
             }}
-            type="Primary" 
+            type="Primary"
+            textStyle={{color:"#fff"}}
             title='Guardar'
             containerStyle={{
                 height:50,
                 width:"50%",
+                marginTop:20,
             }}
         /> 
 
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
@@ -85,7 +106,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:"#ffffff"
+    backgroundColor:"#ffffff",
+    paddingHorizontal:10,
+    // justifyContent: "space-around"
+
   },
   title: {
     fontSize: 20,
@@ -95,5 +119,29 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+    minWidth: '100%'
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });

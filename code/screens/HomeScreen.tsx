@@ -8,15 +8,11 @@ import { home } from '../Services/ApiService';
 export default function HomeScreen({ navigation }: any) {
     const [loadingData, setLoadingData] = useState(false);
     const [data, setData] = useState<any>([]);
-    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         async function loaddata() {
           let data = await home()
-          console.log(data)
-
           setData(data.data)
-          console.log(data.data)
           setLoadingData(true)
         }
         if(!loadingData ){
@@ -24,14 +20,6 @@ export default function HomeScreen({ navigation }: any) {
         }
   
       },[loadingData]);
-      const onRefresh = useCallback(async () => {
-        setRefreshing(true);
-        let data = await home()
-        console.log(data)
-        setData(data.data)
-
-        setRefreshing(false);
-    }, []);
   return (
     <View style={styles.container}>
         <View style={{flexDirection:"column",backgroundColor:"#ffffff"}}>

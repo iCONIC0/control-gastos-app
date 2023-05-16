@@ -1,14 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {  useState } from 'react';
-import {Alert, Image, Platform, StyleSheet, TextInput } from 'react-native';
+import { Platform, StyleSheet, TextInput } from 'react-native';
 import { Button } from '../components/Button';
-import { Text, View } from '../components/Themed';
+import {  View } from '../components/Themed';
 import { globalStyle } from '../utils/GlobalStyles';
-import GlobalAxios from '../utils/GlobalAxios';
-import { resolverApiErrors } from '../utils/Utils';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import  { useAuth } from '../Providers/AuthContext';
-import { logIn } from '../Services/ApiService';
 
 export default function LoginScreen({ navigation }: any) {
   const [formData,setFormData] = useState<any>({});
@@ -23,13 +19,12 @@ export default function LoginScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
         {/* <Image source={require('../assets/images/pets.png')} style={{width:"70%",height:"25%"}} resizeMode="cover"/> */}
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <TextInput value={formData?.email} onChangeText={(text)=>{
           onChangeInput(text.toLowerCase(),'email')
-        }} placeholderTextColor="#622f2e" style={globalStyle.baseTextInputStyle} textContentType="emailAddress" keyboardType="email-address"/>
+        }} placeholderTextColor="#333333" style={globalStyle.baseTextInputStyle} textContentType="emailAddress" keyboardType="email-address"/>
         <TextInput value={formData?.password} onChangeText={(text)=>{
           onChangeInput(text,'password')
-        }} placeholderTextColor="#622f2e" style={globalStyle.baseTextInputStyle} secureTextEntry/>
+        }} placeholderTextColor="#333333" style={globalStyle.baseTextInputStyle} secureTextEntry/>
         <Button 
             withIcon={true} 
             onPress={logInFunction}
@@ -40,11 +35,13 @@ export default function LoginScreen({ navigation }: any) {
                 width:"70%",
                 marginBottom:10
             }}
+            textStyle={{color:'#fff'}}
             iconName={'arrow-right'}/>
         <Button 
             withIcon={false} 
             onPress={()=>{navigation.navigate('Root',{params:{userAccount:"invited"}} )}}
-            type="Primary" 
+            type="Secondary"
+            outlined={true}
             title='Continuar como invitado'
             containerStyle={{
                 height:50,

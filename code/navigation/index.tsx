@@ -3,7 +3,7 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -23,6 +23,8 @@ import IncomesForm from '../screens/Incomes/IncomesForm';
 import ExpenseScreen from '../screens/Expenses/ExpenseScreen';
 import ExpensesForm from '../screens/Expenses/ExpensesForm';
 import HomeScreen from '../screens/HomeScreen';
+import IncomesTypesForm from '../screens/Incomes/IncomesTypesForm';
+import ExpensesTypesForm from '../screens/Expenses/ExpensesTypesForm';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -51,13 +53,19 @@ function RootNavigator() {
         <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
         <Stack.Group screenOptions={{ presentation: 'modal' , headerShown:false}}>
-          <Stack.Screen name="IncomesAdd" component={IncomesForm} />
+          <Stack.Screen name="IncomesAdd" component={IncomesForm} options={{ title:'Agregar Ingreso' }} />
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: 'modal' , headerShown:false}}>
+          <Stack.Screen name="IncomesTypeAdd" component={IncomesTypesForm} options={{ title:'Agregar tipo de Ingreso' }} />
         </Stack.Group>
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Group>
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
-          <Stack.Screen name="ExpensesAdd" component={ExpensesForm} />
+        <Stack.Group screenOptions={{ presentation: 'modal' , headerShown:false}}>
+          <Stack.Screen name="ExpensesAdd" component={ExpensesForm} options={{ title:'Agregar Gasto' }} />
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: 'modal' , headerShown:false}}>
+          <Stack.Screen name="ExpensesTypeAdd" component={ExpensesTypesForm} options={{ title:'Agregar Tipo de Gasto' }} />
         </Stack.Group>
       </Stack.Navigator>
     );
@@ -88,7 +96,7 @@ function BottomTabNavigator() {
         <FontAwesome
           name="user-circle"
           size={25}
-          color={Colors[colorScheme].text}
+          color={'#000'}
           style={{ marginRight: 15 }}
         />
       </Pressable>
@@ -119,7 +127,7 @@ function BottomTabNavigator() {
         name="Home"
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<'Home'>) => ({
-          title: 'Inicio',
+          title: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => {return prof(navigation)} ,
         })}
@@ -129,8 +137,8 @@ function BottomTabNavigator() {
         component={ExpenseScreen}
         options={({ navigation }: RootTabScreenProps<'Expenses'>) => ({
           title: 'Egresos',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons
-            name="hand-coin"
+          tabBarIcon: ({ color }) => <FontAwesome5
+            name="hand-holding-usd"
             size={25}
             color={color}
             style={{ marginRight: 15 }}

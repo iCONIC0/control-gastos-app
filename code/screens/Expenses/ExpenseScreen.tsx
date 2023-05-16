@@ -1,25 +1,27 @@
-import { ScrollView,RefreshControl, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { Text, View } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
-import { ListItem,Avatar,Chip, ButtonGroup  } from "@rneui/themed";
-import { useCallback, useState } from 'react';
+import { ListItem,Chip, ButtonGroup, SpeedDial, Icon  } from "@rneui/themed";
+import {  useState } from 'react';
 import { useEffect } from 'react';
 import ExpandedArea from '../../components/ExpandedArea';
 import { formatDates, formatMoney } from '../../utils/Utils';
-import { FAB } from '@rneui/base';
 import { expenses, expensesFilters } from '../../Services/ApiService';
 import CardView from '../../components/CardView';
-
+import useColorScheme from '../../hooks/useColorScheme';
 
 export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expenses'>) {
   const [filters,setFilters] = useState<any>();
-  const [selectedFilters,setSelectedFilters] = useState<any>();
+  const [selectedFilters,setSelectedFilters] = useState<any>({month:new Date().toISOString().slice(0,7)});
   const [items,setItems] = useState<any>();
   const [item,setItem] = useState<any>();
   const [loadingData,setLoadingData] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [openDial, setOpenDial] = useState(false);
   const [familyExpenses, setFamilyExpenses] = useState(0);
+  const colorScheme = useColorScheme();
+
   useEffect(() => {
       async function loaddata() {
         let data = await expensesFilters()
@@ -63,7 +65,11 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
         onPress={(value) => {
           setFamilyExpenses(value);
         }}
-        containerStyle={{ marginBottom: 20 }}
+        containerStyle={{ marginBottom: 20, backgroundColor: '#000000',padding:2 ,borderRadius:10}}
+        selectedButtonStyle={{backgroundColor:"#ffffff",borderRadius:5}}
+        textStyle={{color:'#ffffff' }}
+        selectedTextStyle={{color:colorScheme == 'dark' ? '#000000' : '#ffffff'}}
+        innerBorderStyle={{width:0}}
       />
       <View style={{width:'100%',alignItems:"center",padding:10,backgroundColor:"rgba(255,255,255,1)"}}>
         <CardView key={item} item={item}>
@@ -73,11 +79,14 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
             (filters ?? []).map((l:any, i:any) => (
               <Chip key={i} title={l} onPress={()=>{
                 setSelectedFilters({month:l})
-              }
-              }></Chip>))
+              }}
+              buttonStyle={{backgroundColor: selectedFilters?.month==l ? '#000' :'#fff' }}
+              titleStyle={{color: selectedFilters?.month==l ? '#fff' :'#000' }}
+              ></Chip>))
           }
         </ScrollView>
       </View>
+      <Text lightColor='#000' style={{color:"#000",marginHorizontal:10,paddingBottom:5,fontSize: 23,marginLeft: 12}}>Egresos</Text>
       <ScrollView style={{
           backgroundColor: "white", 
           flex: 1,
@@ -102,13 +111,13 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
         (items ?? []).map((l:any, i:any) => (
           <ListItem key={i} bottomDivider onPress={()=>{
             expandList(i)
-          }} containerStyle={{borderTopRightRadius:10,borderTopLeftRadius:10,backgroundColor:"transparent"}}>
+          }}  containerStyle={{borderTopRightRadius:10,borderTopLeftRadius:10,backgroundColor:"transparent"}}>
           <ListItem.Content>
               <ListItem.Title >{l.name}</ListItem.Title>
               <ListItem.Subtitle>{l.expand ? '' :  
                 <View style={{flexDirection:"row",backgroundColor:"#fff",justifyContent:'space-between',alignContent:'space-around',width:'100%',paddingTop:5}}>
-                  <Text darkColor="rgba(0,0,0,0.8)" lightColor="rgba(255,255,255,0.8)" style={{textAlign:"left" }}>{formatMoney(l.amount)}</Text>
-                  <Text darkColor="rgba(0,0,0,0.8)" lightColor="rgba(255,255,255,0.8)" style={{textAlign:"left" }}>Fecha: {formatDates(l.created_at)}</Text>
+                  <Text style={{textAlign:"left",color:"#000",fontWeight:'bold' }}>{formatMoney(l.amount)}</Text>
+                  <Text style={{textAlign:"left",color:"#000",fontWeight:'bold' }}>Fecha: {formatDates(l.created_at)}</Text>
                 </View>
               }</ListItem.Subtitle>
               { l.expand ? <ExpandedArea item={l} key={l}/> : null }
@@ -117,12 +126,32 @@ export default function ExpenseScreen({ navigation }: RootTabScreenProps<'Expens
         ))
       }
       </ScrollView>
-      <FAB
-        placement="right"
-        onPress={()=>{navigation.navigate('ExpensesAdd')}}
-        icon={{ name: 'add', color: 'white' }}
-        color="black"
-      />
+      <SpeedDial
+        isOpen={openDial}
+        icon={{ name: 'add', color: '#fff' }}
+        openIcon={{ name: 'close', color: '#fff' }}
+        onOpen={() => {setOpenDial(!openDial)}}
+        onClose={() => {setOpenDial(!openDial)}}
+        buttonStyle={{backgroundColor:"#000"}}
+      >
+        <SpeedDial.Action
+          icon={<Icon name="post-add" color="#fff" type='materialicons' size={20}/>}
+          title="Añadir Egreso"
+          onPress={()=>{
+            navigation.navigate('ExpensesAdd')
+            setOpenDial(false)
+          }}
+          buttonStyle={{backgroundColor:"#000"}}
+        /><SpeedDial.Action
+          icon={<Icon name="add-to-list" color="#fff" type='entypo' size={20}/>}
+          title="Añadir Tipo de egreso"
+          onPress={()=>{
+            navigation.navigate('ExpensesTypeAdd')
+            setOpenDial(false)
+          }}
+          buttonStyle={{backgroundColor:"#000"}}
+        />
+      </SpeedDial>
     </View>
   );
 }

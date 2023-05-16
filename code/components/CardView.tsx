@@ -9,11 +9,11 @@ export default function CardView({item,style,children}:any) {
     return null;
   }
   return (
-    <View style={[styles.container, style]} lightColor="rgba(0,0,0,0.8)" darkColor="rgba(255,255,255,0.8)" >
-      <Text style={styles.octubre2022}>{item.title}</Text>
+    <View style={[styles.container, style]} >
+      <Text style={styles.title}>{item.title}</Text>
       <View style={styles.loremIpsumRow}>
         <Text style={styles.loremIpsum}>{formatMoney(item.total)}</Text>
-        <Text style={styles.ingresosTotales1}>ingresos totales {item.count}</Text>
+        <Text style={styles.ingresosTotales}>Ingresos totales {item.count}</Text>
       </View>
       {children}
     </View>
@@ -37,21 +37,23 @@ const styles = StyleSheet.create({
     // fontFamily: "roboto-regular",
     // color: "#121212",
     fontSize: 41,
+    alignSelf: "flex-end",
 
   },
-  ingresosTotales1: {
+  ingresosTotales: {
     textAlign: "right",
     flex: 1,
+    alignSelf: "flex-end",
   },
   loremIpsumRow: {
     height: 49,
     flexDirection: "row",
-    marginTop: 64,
+    marginTop: 20,
     marginLeft: 6,
     backgroundColor: "rgba(255, 255, 255,1)",
     marginRight: 14
   },
-  octubre2022: {
+  title: {
     // fontFamily: "roboto-regular",
     // color: "#121212",
     fontSize: 23,

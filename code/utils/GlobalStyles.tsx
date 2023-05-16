@@ -1,12 +1,7 @@
 import { StyleSheet } from "react-native";
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 
-  /**
-   * primary #ffffff
-   * secondary #ff5555
-   * alternate #6be1c1
-   * letters and borders #622f2e
-   */
+
 export const  globalStyle =StyleSheet.create({
     container: {
         flex: 1,
@@ -40,7 +35,6 @@ export const  globalStyle =StyleSheet.create({
         lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,
-        color: '#ffffff',
         textAlign: 'center',
     },
     baseButtonStylePrimary :  {
@@ -50,7 +44,18 @@ export const  globalStyle =StyleSheet.create({
         paddingVertical: 1,
         paddingHorizontal: 3,
         borderRadius: 12,
-        backgroundColor: '#ff5555',
+        backgroundColor: '#000',
+        color: '#fff',
+    },
+    baseButtonStylePrimaryOutlined :  {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 1,
+        paddingHorizontal: 3,
+        borderRadius: 12,
+        backgroundColor: '#000',
+        color: '#fff',
     },
     baseButtonStyleSecondary :  {
         flexDirection: 'row',
@@ -59,7 +64,20 @@ export const  globalStyle =StyleSheet.create({
         paddingVertical: 1,
         paddingHorizontal: 3,
         borderRadius: 12,
-        backgroundColor: '#6be1c1',
+        backgroundColor: '#ffffff',
+        color: '#000',
+    },
+    baseButtonStyleSecondaryOutlined :  {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 1,
+        paddingHorizontal: 3,
+        borderRadius: 12,
+        backgroundColor: '#ffffff',
+        color: '#000',
+        borderWidth:1,
+        borderColor:"#000"
     },
     baseButtonStyleAlternate :  {
         flexDirection: 'row',
@@ -108,9 +126,9 @@ export const  globalStyle =StyleSheet.create({
         borderRadius: 12,
         backgroundColor: '#ffffff',
         marginBottom:10,
-        color:"#622f2e",
+        color:"#000",
         borderWidth:1,
-        borderColor:"#6be1c1"
+        borderColor:"#333333"
     },
     baseSelectStyle:{
         minWidth: '100%',

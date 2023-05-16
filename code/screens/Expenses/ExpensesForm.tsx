@@ -1,4 +1,4 @@
-import {Platform,  StyleSheet } from 'react-native';
+import {KeyboardAvoidingView, Platform,  StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import {  View,Text } from '../../components/Themed';
 import { RootTabScreenProps } from '../../types';
@@ -9,20 +9,20 @@ import { addExpense,  expensesTypesList, } from '../../Services/ApiService';
 import { RadioButton } from 'react-native-paper';
 import { maskInput } from '../../utils/Utils';
 import { Switch } from "@rneui/themed";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Dropdown } from 'react-native-element-dropdown';
 
 export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expenses'>) {
   const [formData,setFormData] = useState<any>({});
   const [loadingData,setLoadingData] = useState(false);
   const [expensesTypeList,setExpensesTypeList] = useState([]);
-  const [date, setDate] = useState<any>(new Date())
-  const [open, setOpen] = useState(false)
 
   const onChangeInput = (value:any,name:any)=>{
     setFormData({...formData,[name]:value});
   }
   useEffect(() => {
     async function loaddata() {
-      let data = await expensesTypesList()
+      let data = await expensesTypesList(false)
       if(data.status){
         setExpensesTypeList(data.data??[])
         if(data.data.length>0){
@@ -39,6 +39,11 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
   },[loadingData]);
 
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{flex:1}}
+  >
+    <TouchableWithoutFeedback>
      <View style={styles.container}>
       <Input placeholder='Fecha DD/MM/YYYY' value={formData?.date} onChangeText={(text)=>{
           onChangeInput(maskInput(text.toLowerCase(),'DD/MM/YYYY','/'),'date')
@@ -57,13 +62,25 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
           onValueChange={(value) => onChangeInput(!formData?.family,'family')}
         />
       </View>
-      <RadioButton.Group
-        onValueChange={value => onChangeInput(value,'type_id')} value={formData?.type_id}>      
-      {expensesTypeList.map((item:any)=>{
-          return (<RadioButton.Item label={item.name} value={item.value} key={item.value}/>)
-        })
-      }
-      </RadioButton.Group>
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={expensesTypeList}
+        search
+        maxHeight={300}
+        labelField="name"
+        valueField="value"
+        placeholder="Select item"
+        searchPlaceholder="Search..."
+        value={formData?.type_id}
+        onChange={value => onChangeInput(value,'type_id')}
+        renderLeftIcon={() => (
+          <AntDesign style={styles.icon} color="black" name="check" size={20} />
+        )}
+      />
 
       <Button
             
@@ -74,7 +91,8 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
                 navigation.goBack()
               }
             }}
-            type="Primary" 
+            type="Primary"
+            textStyle={{color:"#fff"}}
             title='Guardar'
             containerStyle={{
                 marginTop:20,
@@ -85,6 +103,8 @@ export default function ExpensesForm({ navigation }: RootTabScreenProps<'Expense
 
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
@@ -102,5 +122,29 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+    minWidth: '100%'
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });
